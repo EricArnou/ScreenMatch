@@ -41,6 +41,8 @@ public class Main {
                 case 3:
                     getSeries();
                     break;
+                case 0:
+                    break;
                 default:
                     System.out.println("invalid option");
             }

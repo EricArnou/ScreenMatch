@@ -1,9 +1,18 @@
 package com.gmail.ericarnou68.screenMatch.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Entity
+@Table(name = "series")
 public class Serie {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
     private String title;
     private Integer totalSeasons;
     private Double assessment;
@@ -11,6 +20,9 @@ public class Serie {
     private String actors;
     private String poster;
     private String synopsis;
+
+    @Transient
+    private List<Episode> episodeList = new ArrayList<>();
 
     public Serie(SeriesData seriesData){
         this.title = seriesData.title();
@@ -25,6 +37,14 @@ public class Serie {
         } catch (NumberFormatException e){
             this.assessment = 0.0;
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -51,6 +71,7 @@ public class Serie {
         this.assessment = assessment;
     }
 
+    @Enumerated(EnumType.STRING)
     public Category getGenre() {
         return genre;
     }
