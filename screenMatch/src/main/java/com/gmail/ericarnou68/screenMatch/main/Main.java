@@ -2,20 +2,25 @@ package com.gmail.ericarnou68.screenMatch.main;
 
 import com.gmail.ericarnou68.screenMatch.model.Serie;
 import com.gmail.ericarnou68.screenMatch.model.SeriesData;
+import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
 import com.gmail.ericarnou68.screenMatch.service.ApiConsumer;
 import com.gmail.ericarnou68.screenMatch.service.DataConverter;
-
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class Main {
     private Scanner scanner = new Scanner(System.in);
     private ApiConsumer apiConsumer = new ApiConsumer();
     private DataConverter converter = new DataConverter();
-    private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Serie> seriesList = new ArrayList<>();
+    private SerieRepository serieRepository;
     private final String URL = "https://www.omdbapi.com/?t=";
     private final String APIKEY = "&apikey=231837db";
+
+    public Main(SerieRepository serieRepository) {
+        this.serieRepository = serieRepository;
+    }
+
     public void showMenu(){
         String menu = """
                 1 - Search serie
@@ -50,10 +55,8 @@ public class Main {
     }
 
     private void getSeries() {
-        seriesList = seriesDataList.stream()
-                .map(s -> new Serie(s)).collect(Collectors.toList());
-
-        seriesList.forEach(System.out::println);
+        seriesList = serieRepository.findAll();
+        seriesList.stream().forEach(System.out::println);
     }
 
     private void getEpisodesList() {
@@ -61,15 +64,16 @@ public class Main {
 
     private void getSerieWeb() {
         SeriesData data = getSerieData();
-        seriesDataList.add(data);
-        System.out.println(data);
+        Serie serie = new Serie(data);
+        serieRepository.save(serie);
+        System.out.println(serie);
     }
 
     private SeriesData getSerieData() {
         System.out.println("Write the name's serie: ");
         String title = scanner.nextLine();
-        String json = apiConsumer.resquestData(URL + title.replace(" ", "+")+ APIKEY);
-        SeriesData data =  converter.extractData(json, SeriesData.class);
+        String json = apiConsumer.resquestData(URL + title.replace(" ", "+") + APIKEY);
+        SeriesData data = converter.extractData(json, SeriesData.class);
         return data;
     }
 }

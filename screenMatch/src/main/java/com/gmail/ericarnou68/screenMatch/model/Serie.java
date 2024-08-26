@@ -39,6 +39,10 @@ public class Serie {
         }
     }
 
+    public Serie() {
+
+    }
+
     public Long getId() {
         return id;
     }
