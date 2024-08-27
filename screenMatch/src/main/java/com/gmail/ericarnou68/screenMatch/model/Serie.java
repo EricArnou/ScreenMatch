@@ -1,10 +1,8 @@
 package com.gmail.ericarnou68.screenMatch.model;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Table(name = "series")
@@ -16,13 +14,17 @@ public class Serie {
     private String title;
     private Integer totalSeasons;
     private Double assessment;
+    @Enumerated(EnumType.STRING)
     private Category genre;
     private String actors;
     private String poster;
     private String synopsis;
 
-    @Transient
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episode> episodeList = new ArrayList<>();
+
+    public Serie() {
+    }
 
     public Serie(SeriesData seriesData){
         this.title = seriesData.title();
@@ -37,10 +39,6 @@ public class Serie {
         } catch (NumberFormatException e){
             this.assessment = 0.0;
         }
-    }
-
-    public Serie() {
-
     }
 
     public Long getId() {
@@ -75,7 +73,6 @@ public class Serie {
         this.assessment = assessment;
     }
 
-    @Enumerated(EnumType.STRING)
     public Category getGenre() {
         return genre;
     }
@@ -106,6 +103,15 @@ public class Serie {
 
     public void setSynopsis(String synopsis) {
         this.synopsis = synopsis;
+    }
+
+    public List<Episode> getEpisodeList() {
+        return episodeList;
+    }
+
+    public void setEpisodeList(List<Episode> episodeList) {
+        episodeList.forEach(e -> e.setSerie(this));
+        this.episodeList = episodeList;
     }
 
     @Override

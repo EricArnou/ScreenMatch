@@ -1,12 +1,14 @@
 package com.gmail.ericarnou68.screenMatch.main;
 
+import com.gmail.ericarnou68.screenMatch.model.Episode;
+import com.gmail.ericarnou68.screenMatch.model.SeasonData;
 import com.gmail.ericarnou68.screenMatch.model.Serie;
 import com.gmail.ericarnou68.screenMatch.model.SeriesData;
 import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
 import com.gmail.ericarnou68.screenMatch.service.ApiConsumer;
 import com.gmail.ericarnou68.screenMatch.service.DataConverter;
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 public class Main {
     private Scanner scanner = new Scanner(System.in);
@@ -19,10 +21,12 @@ public class Main {
 
     public Main(SerieRepository serieRepository) {
         this.serieRepository = serieRepository;
+        seriesList = serieRepository.findAll();
     }
 
     public void showMenu(){
         String menu = """
+                
                 1 - Search serie
                 2 - Search episode
                 3 - List series
@@ -59,7 +63,32 @@ public class Main {
         seriesList.stream().forEach(System.out::println);
     }
 
-    private void getEpisodesList() {
+    private void getEpisodesList(){
+        seriesList.forEach(System.out::println);
+        System.out.println("Enter with serie's name");
+        String name_serie = scanner.nextLine();
+
+        Optional<Serie> serie = serieRepository.findByTitleContainingIgnoreCase(name_serie);
+
+        if(serie.isPresent()){
+            Serie serieFound = serie.get();
+            List<SeasonData> seasonData = new ArrayList<>();
+
+            for (int i = 1; i < serieFound.getTotalSeasons(); i++) {
+                String json = apiConsumer.resquestData(URL + serieFound.getTitle().replace(" ", "+")+"&season="+ i + APIKEY);
+                SeasonData season = converter.extractData(json, SeasonData.class);
+                seasonData.add(season);
+            }
+            seasonData.forEach(System.out::println);
+            List<Episode> episodes = seasonData.stream()
+                    .flatMap(d -> d.episodes().stream()
+                            .map(e -> new Episode(d.season(), e)))
+                    .collect(Collectors.toList());
+            serieFound.setEpisodeList(episodes);
+            serieRepository.save(serieFound);
+        } else {
+            System.out.println("Serie não encontrada!");
+        }
     }
 
     private void getSerieWeb() {
@@ -69,7 +98,7 @@ public class Main {
         System.out.println(serie);
     }
 
-    private SeriesData getSerieData() {
+    private SeriesData getSerieData(){
         System.out.println("Write the name's serie: ");
         String title = scanner.nextLine();
         String json = apiConsumer.resquestData(URL + title.replace(" ", "+") + APIKEY);
