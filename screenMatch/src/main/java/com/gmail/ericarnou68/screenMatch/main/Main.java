@@ -1,12 +1,10 @@
 package com.gmail.ericarnou68.screenMatch.main;
 
-import com.gmail.ericarnou68.screenMatch.model.Episode;
-import com.gmail.ericarnou68.screenMatch.model.SeasonData;
-import com.gmail.ericarnou68.screenMatch.model.Serie;
-import com.gmail.ericarnou68.screenMatch.model.SeriesData;
+import com.gmail.ericarnou68.screenMatch.model.*;
 import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
 import com.gmail.ericarnou68.screenMatch.service.ApiConsumer;
 import com.gmail.ericarnou68.screenMatch.service.DataConverter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,9 +25,11 @@ public class Main {
     public void showMenu(){
         String menu = """
                 
-                1 - Search serie
-                2 - Search episode
+                1 - Add serie
+                2 - Add episodes
                 3 - List series
+                4 - Search serie by actor
+                5 - Search serie by genre
                 0 - Exit
                 """;
 
@@ -50,6 +50,10 @@ public class Main {
                 case 3:
                     getSeries();
                     break;
+                case 4:
+                    getSeriesByActor();
+                case 5:
+                    getSeriesByGenre();
                 case 0:
                     break;
                 default:
@@ -64,6 +68,7 @@ public class Main {
     }
 
     private void getEpisodesList(){
+        seriesList = serieRepository.findAll();
         seriesList.forEach(System.out::println);
         System.out.println("Enter with serie's name");
         String name_serie = scanner.nextLine();
@@ -99,10 +104,25 @@ public class Main {
     }
 
     private SeriesData getSerieData(){
-        System.out.println("Write the name's serie: ");
+        System.out.println("Write the serie's title: ");
         String title = scanner.nextLine();
         String json = apiConsumer.resquestData(URL + title.replace(" ", "+") + APIKEY);
         SeriesData data = converter.extractData(json, SeriesData.class);
         return data;
+    }
+
+    private void getSeriesByActor() {
+        System.out.println("Enter with actor's name: ");
+        String actor = scanner.nextLine();
+        List<Serie> seriesByActor = serieRepository.findByActorsContainingIgnoreCase(actor);
+        seriesByActor.forEach(System.out::println);
+    }
+
+    private void getSeriesByGenre(){
+        System.out.println("Enter with serie's genre: ");
+        String genre = scanner.nextLine();
+        Category category = Category.fromString(genre);
+        List<Serie> seriesByGenre = serieRepository.findByGenre(category);
+        seriesByGenre.forEach(System.out::println);
     }
 }
