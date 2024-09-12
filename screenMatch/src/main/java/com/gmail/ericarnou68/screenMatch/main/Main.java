@@ -4,7 +4,6 @@ import com.gmail.ericarnou68.screenMatch.model.*;
 import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
 import com.gmail.ericarnou68.screenMatch.service.ApiConsumer;
 import com.gmail.ericarnou68.screenMatch.service.DataConverter;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
