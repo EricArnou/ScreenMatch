@@ -1,5 +1,6 @@
 package com.gmail.ericarnou68.screenMatch.controller;
 
+import com.gmail.ericarnou68.screenMatch.dto.EpisodeDto;
 import com.gmail.ericarnou68.screenMatch.dto.SerieDto;
 import com.gmail.ericarnou68.screenMatch.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,15 @@ public class SerieController {
     @GetMapping("/lancamentos")
     public List<SerieDto> getSerieByRealease(){
         return serieService.getSerieByRealese();
+    }
+
+    @GetMapping("/{id}/temporadas/todas")
+    public List<EpisodeDto> getAllSeasons(@PathVariable Long id){
+        return serieService.getAllSeasons(id);
+    }
+
+    @GetMapping("/{id}/temporadas/{numero}")
+    public List<EpisodeDto> getSeasonByNumber(@PathVariable Long id, @PathVariable Long numero){
+        return serieService.getSeasonByNumber(id, numero);
     }
 }

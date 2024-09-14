@@ -1,5 +1,6 @@
 package com.gmail.ericarnou68.screenMatch.service;
 
+import com.gmail.ericarnou68.screenMatch.dto.EpisodeDto;
 import com.gmail.ericarnou68.screenMatch.dto.SerieDto;
 import com.gmail.ericarnou68.screenMatch.model.Serie;
 import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
@@ -40,5 +41,22 @@ public class SerieService {
 
     public List<SerieDto> getSerieByRealese() {
         return serieListConverterToDto(serieRepository.findByLastRealeses());
+    }
+
+    public List<EpisodeDto> getAllSeasons(Long id) {
+        Optional<Serie> serie =  serieRepository.findById(id);
+        if (serie.isEmpty()) return null;
+        Serie s = serie.get();
+        return s.getEpisodeList()
+                .stream()
+                .map(e -> new EpisodeDto(e.getSeason(), e.getNumber(), e.getTitle()))
+                .collect(Collectors.toList());
+    }
+
+    public List<EpisodeDto> getSeasonByNumber(Long id, Long number) {
+        return serieRepository.getEpisodeBySeason(id, number)
+                .stream()
+                .map(e -> new EpisodeDto(e.getSeason(), e.getNumber(), e.getTitle()))
+                .collect(Collectors.toList());
     }
 }
