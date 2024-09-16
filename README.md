@@ -7,6 +7,7 @@ This project is the result of Alura's “Java: creating your first API and conne
 - Installation
 - Usage
 - API EndPoints
+- Technologies 
 
 ## Installation
 
@@ -41,3 +42,9 @@ GET /series/{id}/temporadas/todas - returns all the episodes of a serie
 GET /series/{id}/temporadas/{numero} - returns all the episodes of a specific season of a serie
 
 GET /series/categoria/{nome_categoria} - returns all the series in a specific category
+
+## Technologies
+
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
