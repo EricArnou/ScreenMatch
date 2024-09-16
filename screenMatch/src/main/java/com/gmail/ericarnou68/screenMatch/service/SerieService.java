@@ -2,6 +2,7 @@ package com.gmail.ericarnou68.screenMatch.service;
 
 import com.gmail.ericarnou68.screenMatch.dto.EpisodeDto;
 import com.gmail.ericarnou68.screenMatch.dto.SerieDto;
+import com.gmail.ericarnou68.screenMatch.model.Category;
 import com.gmail.ericarnou68.screenMatch.model.Serie;
 import com.gmail.ericarnou68.screenMatch.repository.SerieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,10 @@ public class SerieService {
                 .stream()
                 .map(e -> new EpisodeDto(e.getSeason(), e.getNumber(), e.getTitle()))
                 .collect(Collectors.toList());
+    }
+
+    public List<SerieDto> getSerieByGenre(String genre) {
+        Category category = Category.fromPortugues(genre);
+        return serieListConverterToDto(serieRepository.findByGenre(category));
     }
 }
