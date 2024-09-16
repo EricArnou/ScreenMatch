@@ -1,9 +1,9 @@
 package com.gmail.ericarnou68.screenMatch.model;
 
 public enum Category {
-    COMEDY ("Comedy"),
+    COMEDIA ("Comedy"),
     DRAMA ("Drama"),
-    ACTION ("Action"),
+    ACAO ("Action"),
     CRIME ("Crime"),
     ROMANCE("Romance");
 
